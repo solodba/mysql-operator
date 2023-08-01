@@ -20,6 +20,7 @@ import (
 	"context"
 	"fmt"
 	"reflect"
+	"sync"
 
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -36,6 +37,7 @@ type MysqlBackupReconciler struct {
 	client.Client
 	Scheme           *runtime.Scheme
 	MysqlBackupQueue map[string]*operatorcodehorsecomv1beta1.MysqlBackup
+	Lock             sync.Mutex
 }
 
 //+kubebuilder:rbac:groups=operator.codehorse.com,resources=mysqlbackups,verbs=get;list;watch;create;update;patch;delete

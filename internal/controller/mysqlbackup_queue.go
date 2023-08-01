@@ -7,8 +7,8 @@ import (
 // 从mysql备份队列中删除备份任务
 func (r *MysqlBackupReconciler) DeleteMysqlBackupQueue(mysqlBackup *operatorcodehorsecomv1beta1.MysqlBackup) {
 	delete(r.MysqlBackupQueue, mysqlBackup.Name)
-	r.StopTask(mysqlBackup)
-	go r.StartTask(mysqlBackup)
+	r.StopTask()
+	go r.StartTask()
 }
 
 // 添加mysql备份任务到备份队列中
@@ -17,6 +17,6 @@ func (r *MysqlBackupReconciler) AddMysqlBackupQueue(mysqlBackup *operatorcodehor
 		r.MysqlBackupQueue = make(map[string]*operatorcodehorsecomv1beta1.MysqlBackup)
 	}
 	r.MysqlBackupQueue[mysqlBackup.Name] = mysqlBackup
-	r.StopTask(mysqlBackup)
-	go r.StartTask(mysqlBackup)
+	r.StopTask()
+	go r.StartTask()
 }

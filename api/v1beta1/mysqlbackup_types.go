@@ -63,8 +63,12 @@ type BackupDestination struct {
 
 // MysqlBackupStatus defines the observed state of MysqlBackup
 type MysqlBackupStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	// 是否运行中
+	Active bool `json:"active"`
+	// 下次启动时间
+	NextTime int64 `json:"nextTime"`
+	// 上次备份是否成功的信息
+	LastBackupResult string `json:"lastBackupResult"`
 }
 
 //+kubebuilder:object:root=true
