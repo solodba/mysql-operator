@@ -15,6 +15,7 @@ func (r *MysqlBackupReconciler) StartTask() {
 			r.UpdateMysqlBackupStatus(mysqlBackup)
 			continue
 		}
+		// 计算备份时间
 
 	}
 
