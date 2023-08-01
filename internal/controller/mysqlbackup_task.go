@@ -40,6 +40,7 @@ func (r *MysqlBackupReconciler) StartTask() {
 			defer r.Wg.Done()
 			// 循环执行执行任务
 			for {
+				// 计时
 				<-ticker.C
 				// 重置定时器
 				ticker.Reset(time.Minute * time.Duration(mysqlBackup.Spec.Period))
@@ -55,7 +56,6 @@ func (r *MysqlBackupReconciler) StartTask() {
 		}(mysqlBackup)
 		r.Wg.Wait()
 	}
-
 }
 
 // 停止任务
