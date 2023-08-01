@@ -19,6 +19,7 @@ package controller
 import (
 	"context"
 
+	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -48,7 +49,16 @@ type MysqlBackupReconciler struct {
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.15.0/pkg/reconcile
 func (r *MysqlBackupReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
+	// 查找mysql备份任务
+	k8sMysqlBackup := operatorcodehorsecomv1beta1.NewMysqlBackup()
+	err := r.Client.Get(ctx, req.NamespacedName, k8sMysqlBackup)
+	if err != nil {
+		if errors.IsNotFound(err) {
+			// 查找不到mysql备份任务, 说明任务已经停止, 则删除停止任务
 
+		}
+
+	}
 	return ctrl.Result{}, nil
 }
 
