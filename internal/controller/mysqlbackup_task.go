@@ -66,5 +66,9 @@ func (r *MysqlBackupReconciler) StartTask() {
 
 // 停止任务
 func (r *MysqlBackupReconciler) StopTask() {
-
+	for _, ticker := range r.Tickers {
+		if ticker != nil {
+			ticker.Stop()
+		}
+	}
 }
