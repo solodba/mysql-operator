@@ -75,8 +75,8 @@ type MysqlBackup struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   MysqlBackupSpec   `json:"spec,omitempty"`
-	Status MysqlBackupStatus `json:"status,omitempty"`
+	Spec   *MysqlBackupSpec   `json:"spec,omitempty"`
+	Status *MysqlBackupStatus `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
