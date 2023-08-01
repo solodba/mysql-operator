@@ -1,0 +1,12 @@
+apiVersion: operator.codehorse.com/v1beta1
+kind: MysqlBackup
+metadata:
+  labels:
+    app.kubernetes.io/name: mysqlbackup
+    app.kubernetes.io/instance: mysqlbackup-sample
+    app.kubernetes.io/part-of: mysql-operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: mysql-operator
+  name: mysqlbackup-sample
+spec:
+  # TODO(user): Add fields here
