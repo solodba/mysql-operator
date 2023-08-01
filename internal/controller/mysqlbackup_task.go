@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"time"
 
 	operatorcodehorsecomv1beta1 "codehorse.com/mysql-operator/api/v1beta1"
@@ -48,8 +49,13 @@ func (r *MysqlBackupReconciler) StartTask() {
 				mysqlBackup.Status.Active = true
 				mysqlBackup.Status.NextTime = r.GetMysqlBackupNextTime(time.Minute * time.Duration(mysqlBackup.Spec.Period)).Unix()
 				// 开始备份
-				// todo
-
+				err := r.MysqlDataDumpAndUpload(mysqlBackup)
+				if err != nil {
+					logger.L().Error().Msgf("%s", err.Error())
+					mysqlBackup.Status.LastBackupResult = fmt.Sprintf("%s", err.Error())
+				}
+				logger.L().Info().Msgf("[%s] mysql backup successful!", mysqlBackup.Name)
+				mysqlBackup.Status.LastBackupResult = fmt.Sprintf("[%s] mysql backup successful!", mysqlBackup.Name)
 				// 更新状态
 				r.UpdateMysqlBackupStatus(mysqlBackup)
 			}
