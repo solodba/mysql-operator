@@ -24,3 +24,8 @@ func (r *MysqlBackupReconciler) GetMysqlBackupDelay(startTime string) time.Durat
 	}
 	return time.Second * time.Duration(seconds)
 }
+
+// time duration转换成时间
+func (r *MysqlBackupReconciler) GetMysqlBackupNextTime(delay time.Duration) time.Time {
+	return time.Now().Add(delay)
+}
