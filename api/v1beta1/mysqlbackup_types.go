@@ -25,11 +25,40 @@ import (
 
 // MysqlBackupSpec defines the desired state of MysqlBackup
 type MysqlBackupSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	// 是否开启备份
+	Enable bool `json:"enable"`
+	// 备份开始时间
+	StartTime string `json:"startTime"`
+	// 备份时间间隔
+	Period int64 `json:"period"`
+	// mysql备份信息
+	MysqlSource *MysqlSource `json:"mysqlSource"`
+	// 备份目标地址
+	BackupDestination *BackupDestination `json:"backupDestination"`
+}
 
-	// Foo is an example field of MysqlBackup. Edit mysqlbackup_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+// mysql信息
+type MysqlSource struct {
+	// mysql用户名
+	Username string `json:"username"`
+	// mysql密码
+	Password string `json:"password"`
+	// mysql地址
+	Host string `json:"host"`
+	// mysql端口
+	Port int32 `json:"port"`
+}
+
+// BackupDestination信息
+type BackupDestination struct {
+	// 备份目的地地址
+	Endpoint string `json:"endpoint"`
+	// 访问Key
+	AccessKey string `json:"accessKey"`
+	// 访问秘钥
+	AccessSecret string `json:"accessSecret"`
+	// 访问桶名称
+	BucketName string `json:"bucketName"`
 }
 
 // MysqlBackupStatus defines the observed state of MysqlBackup
