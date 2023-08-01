@@ -18,6 +18,8 @@ package controller
 
 import (
 	"context"
+	"fmt"
+	"reflect"
 
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -26,12 +28,14 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	operatorcodehorsecomv1beta1 "codehorse.com/mysql-operator/api/v1beta1"
+	"codehorse.com/mysql-operator/common/logger"
 )
 
 // MysqlBackupReconciler reconciles a MysqlBackup object
 type MysqlBackupReconciler struct {
 	client.Client
-	Scheme *runtime.Scheme
+	Scheme           *runtime.Scheme
+	MysqlBackupQueue map[string]*operatorcodehorsecomv1beta1.MysqlBackup
 }
 
 //+kubebuilder:rbac:groups=operator.codehorse.com,resources=mysqlbackups,verbs=get;list;watch;create;update;patch;delete
@@ -55,10 +59,22 @@ func (r *MysqlBackupReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 	if err != nil {
 		if errors.IsNotFound(err) {
 			// 查找不到mysql备份任务, 说明任务已经停止, 则删除停止任务
-
+			logger.L().Error().Msgf("[%s] is already stopped!", k8sMysqlBackup.Name)
+			r.DeleteMysqlBackupQueue(k8sMysqlBackup)
+			return ctrl.Result{}, err
 		}
-
+		// mysql备份任务异常
+		logger.L().Error().Msgf("[%s] is already abnormal!", k8sMysqlBackup.Name)
+		return ctrl.Result{}, err
 	}
+	// 对比任务信息是否改变
+	if lastMysqlBackup, ok := r.MysqlBackupQueue[k8sMysqlBackup.Name]; ok {
+		if reflect.DeepEqual(k8sMysqlBackup.Spec, lastMysqlBackup.Spec) {
+			return ctrl.Result{}, fmt.Errorf("[%s] information is not changed", k8sMysqlBackup.Name)
+		}
+	}
+	// 添加备份任务到队列
+	r.AddMysqlBackupQueue(k8sMysqlBackup)
 	return ctrl.Result{}, nil
 }
 
